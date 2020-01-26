@@ -1,31 +1,23 @@
-﻿using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TinyCrm
+﻿namespace TinyCrm
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console()
-                .WriteTo.File($@"{System.IO.Directory.GetCurrentDirectory()}\logs\{DateTime.Now:yyyy-MM-dd}\log-.txt",
-                    rollingInterval: RollingInterval.Day)
-                .CreateLogger();
+            var productService = new Services.ProductService();
 
-            Log.Error("this is an error");
+            productService.AddProduct(
+                new Model.Options.AddProductOptions() {
+                    Id = "123",
+                    Price = 13.33M,
+                    ProductCategory = Model.ProductCategory.Cameras,
+                    Name = "Camera 1"
+                });
 
-            Console.ReadKey();
-
-            var productService = new TinyCrm.Services.ProductService();
-            productService.AddProduct(new Model.Options.AddProductOptions()
-            {
-                ProductCategory = (Model.ProductCategory)155
-            });
+            productService.UpdateProduct("123",
+                new Model.Options.UpdateProductOptions() {
+                    Price = 22.22M
+                });
         }
     }
 }
