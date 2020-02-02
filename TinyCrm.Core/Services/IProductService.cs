@@ -1,7 +1,7 @@
-﻿using TinyCrm.Model.Options;
-using TinyCrm.Model;
+﻿using TinyCrm.Core.Model.Options;
+using TinyCrm.Core.Model;
 
-namespace TinyCrm.Services
+namespace TinyCrm.Core.Services
 {
     /// <summary>
     /// 

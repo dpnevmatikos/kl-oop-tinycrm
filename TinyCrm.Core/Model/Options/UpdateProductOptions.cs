@@ -1,4 +1,4 @@
-﻿namespace TinyCrm.Model.Options
+﻿namespace TinyCrm.Core.Model.Options
 {
     /// <summary>
     /// 
