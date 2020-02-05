@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
+using TinyCrm.Core.Data;
 using TinyCrm.Core.Model;
 using TinyCrm.Core.Model.Options;
 
@@ -11,7 +13,13 @@ namespace TinyCrm.Core.Services
     /// </summary>
     public class ProductService : IProductService
     {
-        private List<Product> ProductsList = new List<Product>();
+        private readonly TinyCrmDbContext context;
+
+        public ProductService(TinyCrmDbContext ctx)
+        {
+            context = ctx ??
+                throw new ArgumentNullException(nameof(ctx));
+        }
         
         /// <summary>
         /// 
@@ -50,14 +58,17 @@ namespace TinyCrm.Core.Services
                 Category = options.ProductCategory
             };
 
-            product.Id = options.Id;
-            product.Name = options.Name;
-            product.Price = options.Price;
-            product.Category = options.ProductCategory;
+            context.Add(product);
 
-            ProductsList.Add(product);
+            var success = false;
 
-            return true;
+            try {
+                success = context.SaveChanges() > 0;
+            } catch (Exception) {
+                // log
+            }
+
+            return success;
         }
 
         /// <summary>
@@ -112,10 +123,11 @@ namespace TinyCrm.Core.Services
         {
             if (string.IsNullOrWhiteSpace(id)) {
                 return null;
-            } 
+            }
 
-            return ProductsList.
-                SingleOrDefault(s => s.Id.Equals(id));
+            return context
+                .Set<Product>()
+                .SingleOrDefault(s => s.Id == id);
         }
     }
 }

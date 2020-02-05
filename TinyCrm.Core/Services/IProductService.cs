@@ -6,7 +6,7 @@ namespace TinyCrm.Core.Services
     /// <summary>
     /// 
     /// </summary>
-    interface IProductService
+    public interface IProductService
     {
         /// <summary>
         /// 
