@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TinyCrm.Core.Model.Options
 {
@@ -10,6 +8,6 @@ namespace TinyCrm.Core.Model.Options
         public string Email { get; set; }
         public DateTimeOffset CreatedFrom { get; set; }
         public DateTimeOffset CreatedTo { get; set; }
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
     }
 }

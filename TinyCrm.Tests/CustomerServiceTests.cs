@@ -18,117 +18,35 @@ namespace TinyCrm.Tests
         public CustomerServiceTests()
         {
             context = new TinyCrmDbContext();
+            csvc_ = new CustomerService(context);
         }
-
         [Fact]
-        public void Customer_Order_Success()
+        public void CreateCustomer_Success()
         {
-            var p = new Product()
+            var options = new CreateCustomerOptions()
             {
-                Id = $"1234{DateTime.Now.Millisecond}",
-                Category = ProductCategory.Computers,
-                Name = $"Product {DateTime.Now.Millisecond}",
-                Price = 1234.44M
-            };
-            context.Add(p);
-
-            var p2 = new Product()
-            {
-                Id = $"2234{DateTime.Now.Millisecond}",
-                Category = ProductCategory.Computers,
-                Name = $"Product {DateTime.Now.Millisecond}",
-                Price = 12.44M
-            };
-            context.Add(p2);
-
-            var customer = new Customer()
-            {
-                VatNumber = "117003949",
-                Email = "dpnevmatikos@codehub.gr",
+                VatNumber = $"123{DateTime.UtcNow.Millisecond:D6}",
+                Email = "dsadas",
+                FirstName = "Alex",
+                LastName = "ath",
+                Phone = "344234",
+               
             };
 
-            var order = new Order()
+            var result = csvc_.CreateCustomer(options);
+
+            Assert.NotNull(result);
+
+            var customer = csvc_.SearchCustomers(
+                new SearchCustomerOptions()
                 {
-                    DeliveryAddress = "Kleemann Kilkis"
-                };
+                    VatNumber = options.VatNumber
+                }).SingleOrDefault();
 
-            order.Products.Add(
-                new OrderProduct()
-                {
-                    Product = p2
-                });
-
-            customer.Orders.Add(order);
-
-            context.Add(customer);
-            context.SaveChanges();
-        }
-
-        [Fact]
-        public void Customer_Order_Retrieve()
-        {
-            var orders = context
-                .Set<OrderProduct>()
-                .Where(c => c.Order.Customer.VatNumber == "117003949")
-                .Select(c => c.Order.Products)
-                .ToList();
-
-            Assert.NotNull(orders);
-        }
-
-        [Fact]
-        public void Orders_Retrieve()
-        {
-            var orders = context
-                .Set<Order>()
-                .Include(o => o.Customer)
-                .ToList();
-        }
-
-        [Fact]
-        public void AddCustomer_Success()
-        {
-            var result = csvc_.CreateCustomer(
-                new CreateCustomerOptions()
-                {
-                    Email = "dpnevmatikos@codehub.gr",
-                    VatNumber = "117003949"
-                });
-
-            Assert.True(result);
-        }
-
-        [Fact]
-        public int AddCustomerContacts()
-        {
-            var customer = new Customer()
-            {
-                Firstname = "George",
-                Lastname = "Stathis",
-                Email = "george@gmail.com"
-            };
-            var Contacts = new ContactPerson()
-            {
-                Email = "pnevmatikos@gmail.com"
-            };
-            customer.Contacts.Add(Contacts);
-            context.Add(customer);
-            context.SaveChanges();
-
-            return customer.Id;
-        }
-
-        [Fact]
-
-        public void RetrieveContacts() 
-        {
-            var customerId = AddCustomerContacts();
-            var contacts = context
-                .Set<Customer>()
-                .Include(c => c.Contacts)
-                .Where(c => c.Id == customerId)
-                .Select(c=>c.Contacts)
-                .ToList();
+            Assert.NotNull(customer);
+            Assert.Equal(options.Email, customer.Email);
+            Assert.Equal(options.Phone, customer.Phone);
+            Assert.True(customer.IsActive);
         }
 
         public void Dispose()

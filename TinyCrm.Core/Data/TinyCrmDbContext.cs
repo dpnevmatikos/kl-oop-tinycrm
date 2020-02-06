@@ -41,6 +41,17 @@ namespace TinyCrm.Core.Data
                 .ToTable("Customer");
 
             modelBuilder
+                .Entity<Customer>()
+                .Property(c => c.VatNumber)
+                .HasMaxLength(9)
+                .IsRequired();
+
+            modelBuilder
+                .Entity<Customer>()
+                .HasIndex(c => c.VatNumber)
+                .IsUnique();
+
+            modelBuilder
                 .Entity<Order>()
                 .ToTable("Order");
 
@@ -56,16 +67,6 @@ namespace TinyCrm.Core.Data
                 .Entity<OrderProduct>()
                 .HasKey(op => new { op.OrderId, op.ProductId });
 
-            //modelBuilder
-            //    .Entity<OrderProduct>()
-            //    .HasOne(op => op.Order)
-            //    .WithMany(o => o.Products)
-            //    .HasForeignKey(o => o.OrderId);
-
-            //modelBuilder
-            //    .Entity<OrderProduct>()
-            //    .HasOne(op => op.Product)
-            //    .WithMany();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
