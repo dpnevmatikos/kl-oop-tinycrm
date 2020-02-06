@@ -23,17 +23,42 @@ namespace TinyCrm.Tests
         [Fact]
         public void Customer_Order_Success()
         {
+            var p = new Product()
+            {
+                Id = $"1234{DateTime.Now.Millisecond}",
+                Category = ProductCategory.Computers,
+                Name = $"Product {DateTime.Now.Millisecond}",
+                Price = 1234.44M
+            };
+            context.Add(p);
+
+            var p2 = new Product()
+            {
+                Id = $"2234{DateTime.Now.Millisecond}",
+                Category = ProductCategory.Computers,
+                Name = $"Product {DateTime.Now.Millisecond}",
+                Price = 12.44M
+            };
+            context.Add(p2);
+
             var customer = new Customer()
             {
                 VatNumber = "117003949",
                 Email = "dpnevmatikos@codehub.gr",
             };
 
-            customer.Orders.Add(
-                new Order()
+            var order = new Order()
                 {
                     DeliveryAddress = "Kleemann Kilkis"
+                };
+
+            order.Products.Add(
+                new OrderProduct()
+                {
+                    Product = p2
                 });
+
+            customer.Orders.Add(order);
 
             context.Add(customer);
             context.SaveChanges();
@@ -42,12 +67,13 @@ namespace TinyCrm.Tests
         [Fact]
         public void Customer_Order_Retrieve()
         {
-            var customer = context
-                .Set<Customer>()
-                .Where(c => c.VatNumber == "117003949")
-                .FirstOrDefault();
+            var orders = context
+                .Set<OrderProduct>()
+                .Where(c => c.Order.Customer.VatNumber == "117003949")
+                .Select(c => c.Order.Products)
+                .ToList();
 
-            Assert.NotNull(customer);
+            Assert.NotNull(orders);
         }
 
         [Fact]

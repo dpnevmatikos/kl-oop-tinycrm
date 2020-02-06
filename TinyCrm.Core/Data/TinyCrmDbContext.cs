@@ -48,13 +48,13 @@ namespace TinyCrm.Core.Data
                 .Entity<ContactPerson>()
                 .ToTable("ContactPerson");
 
-            //modelBuilder
-            //    .Entity<Order>()
-            //    .ToTable("Order");
+            modelBuilder
+                .Entity<OrderProduct>()
+                .ToTable("OrderProduct");
 
-            //modelBuilder
-            //    .Entity<OrderProduct>()
-            //    .HasKey(op => new { op.OrderId, op.ProductId });
+            modelBuilder
+                .Entity<OrderProduct>()
+                .HasKey(op => new { op.OrderId, op.ProductId });
 
             //modelBuilder
             //    .Entity<OrderProduct>()
