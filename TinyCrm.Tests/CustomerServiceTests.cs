@@ -1,25 +1,24 @@
-﻿using TinyCrm.Core.Data;
-using TinyCrm.Core.Model;
+﻿using System;
+using System.Linq;
+
+using Xunit;
+using Autofac;
+
 using TinyCrm.Core.Model.Options;
 using TinyCrm.Core.Services;
 
-using System.Linq;
-using Xunit;
-using Microsoft.EntityFrameworkCore;
-using System;
-
 namespace TinyCrm.Tests
 {
-    public partial class CustomerServiceTests : IDisposable
+    public partial class CustomerServiceTests
+        : IClassFixture<TinyCrmFixture>
     {
         private readonly ICustomerService csvc_;
-        private readonly TinyCrmDbContext context;
 
-        public CustomerServiceTests()
+        public CustomerServiceTests(TinyCrmFixture fixture)
         {
-            context = new TinyCrmDbContext();
-            csvc_ = new CustomerService(context);
+            csvc_ = fixture.Container.Resolve<ICustomerService>();
         }
+
         [Fact]
         public void CreateCustomer_Success()
         {
@@ -30,7 +29,6 @@ namespace TinyCrm.Tests
                 FirstName = "Alex",
                 LastName = "ath",
                 Phone = "344234",
-               
             };
 
             var result = csvc_.CreateCustomer(options);
@@ -47,11 +45,6 @@ namespace TinyCrm.Tests
             Assert.Equal(options.Email, customer.Email);
             Assert.Equal(options.Phone, customer.Phone);
             Assert.True(customer.IsActive);
-        }
-
-        public void Dispose()
-        {
-            context.Dispose();
         }
     }
 }

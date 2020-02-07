@@ -71,7 +71,7 @@ namespace TinyCrm.Core.Services
 
             try {
                 context_.SaveChanges();
-            } catch (Exception) {
+            } catch (Exception ex) {
                 return null;
             }
 

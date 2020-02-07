@@ -1,18 +1,19 @@
 using System;
-using Xunit;
 
-using TinyCrm.Core.Data;
+using Xunit;
+using Autofac;
+
+using TinyCrm.Core.Services;
 
 namespace TinyCrm.Tests
 {
-    public partial class ProductServiceTests
+    public partial class ProductServiceTests : IClassFixture<TinyCrmFixture>
     {
-        private readonly Core.Services.IProductService psvc_;
+        private readonly IProductService psvc_;
 
-        public ProductServiceTests()
+        public ProductServiceTests(TinyCrmFixture fixture)
         {
-            psvc_ = new Core.Services.ProductService(
-                new TinyCrmDbContext());
+            psvc_ = fixture.Container.Resolve<IProductService>();
         }
 
         [Fact]

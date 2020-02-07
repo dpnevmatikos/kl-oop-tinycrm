@@ -1,30 +1,31 @@
-﻿using System;
+﻿using System.Linq;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
+using Xunit;
 
 using TinyCrm.Core.Data;
 using TinyCrm.Core.Model;
-using TinyCrm.Core.Model.Options;
 using TinyCrm.Core.Services;
-using Xunit;
+using TinyCrm.Core.Model.Options;
+
+using Autofac;
 
 namespace TinyCrm.Tests
 {
-    public class OrderServiceTests : IDisposable
+    public class OrderServiceTests
+        : IClassFixture<TinyCrmFixture>
     {
-        private readonly TinyCrmDbContext context_;
-        private readonly ICustomerService customers_;
         private readonly IOrderService orders_;
+        private readonly TinyCrmDbContext context_;
         private readonly IProductService products_;
+        private readonly ICustomerService customers_;
 
-        public OrderServiceTests()
+        public OrderServiceTests(TinyCrmFixture fixture)
         {
-            context_ = new TinyCrmDbContext();
-            customers_ = new CustomerService(context_);
-            orders_ = new OrderService(
-                customers_, context_);
-            products_ = new ProductService(context_);
+            context_ = fixture.DbContext;
+            customers_ = fixture.Container.Resolve<ICustomerService>();
+            orders_ = fixture.Container.Resolve<IOrderService>();
+            products_ = fixture.Container.Resolve<IProductService>();
         }
 
         [Fact]
@@ -35,7 +36,7 @@ namespace TinyCrm.Tests
                 Id = CodeGenerator.CreateRandom(),
                 Name = "kostas",
                 Price = 230.00M,
-                ProductCategory = Core.Model.ProductCategory.Cameras
+                ProductCategory = ProductCategory.Cameras
             };
 
             var p2 = new AddProductOptions()
@@ -43,7 +44,7 @@ namespace TinyCrm.Tests
                 Id = CodeGenerator.CreateRandom(),
                 Name = "kossadtas",
                 Price =1230.00M,
-                ProductCategory = Core.Model.ProductCategory.Cameras
+                ProductCategory = ProductCategory.Cameras
             };
             Assert.True(products_.AddProduct(p1));
             Assert.True(products_.AddProduct(p2));
@@ -71,11 +72,6 @@ namespace TinyCrm.Tests
                 Assert.Contains(dbOrder.Products
                     .Select(prod => prod.ProductId), prod => prod.Equals(p));
             }
-        }
-
-        public void Dispose()
-        {
-            context_.Dispose();
         }
     }
 }
