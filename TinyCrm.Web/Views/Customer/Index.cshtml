@@ -1,0 +1,12 @@
+﻿@model List<TinyCrm.Core.Model.Customer>
+<ul class="list-group">
+   
+@{ 
+    foreach(var customer in Model) {
+        <li class="list-group-item">
+            @customer.VatNumber
+        </li>
+    }
+
+}
+</ul>

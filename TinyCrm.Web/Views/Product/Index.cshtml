@@ -1,0 +1,22 @@
+﻿@model TinyCrm.Web.Models.CustomersProductsViewModel
+
+<asp-comp>
+
+</asp-comp>
+<ul>
+@{ 
+    foreach(var customer in Model.Customers) {
+        <li>
+            @customer.VatNumber
+        </li>
+    }
+
+    @:-------------------
+    
+        foreach(var product in Model.Products) {
+        <li>
+            @product.Id
+        </li>
+    }
+}
+</ul>

@@ -1,0 +1,24 @@
+﻿@model TinyCrm.Web.Models.CreateCustomerViewModel
+
+<form method="post" action="@Url.Action("create", "customer")">
+
+  <div class="form-group">
+    <label for="@Html.IdFor(c => c.CreateOptions.VatNumber)">Vat Number</label>
+    @Html.TextBoxFor(c => c.CreateOptions.VatNumber, new { @class="form-control" })
+    <small id="emailHelp" class="form-text text-muted">
+        Vat number should be 9 digits
+    </small>
+  </div>
+
+  <div class="form-group">
+    <label for="@Html.IdFor(c => c.CreateOptions.Email)">Email</label>
+      @Html.TextBoxFor(c => c.CreateOptions.Email, new { @class="form-control" })
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+    
+    @if (!string.IsNullOrWhiteSpace(Model?.ErrorText)) {
+        <div class="alert alert-danger" role="alert">
+            @Model?.ErrorText
+        </div>
+    }
+</form>
