@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using TinyCrm.Core.Data;
 using TinyCrm.Core.Model;
 using TinyCrm.Core.Model.Options;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace TinyCrm.Core.Services
 {
@@ -26,13 +28,13 @@ namespace TinyCrm.Core.Services
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
-        public bool AddProduct(AddProductOptions options)
+        public async Task<bool> AddProductAsync(AddProductOptions options)
         {
             if (options == null) {
                 return false;
             }
 
-            var product = GetProductById(options.Id); 
+            var product =await GetProductByIdAsync(options.Id); 
 
             if (product != null) {
                 return false;
@@ -51,7 +53,7 @@ namespace TinyCrm.Core.Services
                 return false;
             }
 
-            product = new Product() {
+            product.Data = new Product() {
                 Id = options.Id,
                 Name = options.Name,
                 Price = options.Price,
@@ -77,20 +79,20 @@ namespace TinyCrm.Core.Services
         /// <param name="productId"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public bool UpdateProduct(string productId,
+        public async Task<bool> UpdateProductAsync(string productId,
             UpdateProductOptions options)
         {
             if (options == null) {
                 return false;
             }
 
-            var product = GetProductById(productId);
+            var product = await GetProductByIdAsync(productId);
             if (product == null) { 
                 return false; 
             }
 
             if (!string.IsNullOrWhiteSpace(options.Description)) {
-                product.Description = options.Description;
+                product.Data.Description = options.Description;
             }
 
             if (options.Price != null &&
@@ -102,7 +104,7 @@ namespace TinyCrm.Core.Services
                 if (options.Price <= 0) {
                     return false;
                 } else {
-                    product.Price = options.Price.Value;
+                    product.Data.Price = options.Price.Value;
                 }
             }
 
@@ -119,15 +121,27 @@ namespace TinyCrm.Core.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Product GetProductById(string id)
+        public async Task<ApiResult<Product>> GetProductByIdAsync(
+            string id)
         {
             if (string.IsNullOrWhiteSpace(id)) {
-                return null;
+                return new ApiResult<Product>(
+                    StatusCode.BadRequest, "null id");
             }
 
-            return context
+            var product =  await context
                 .Set<Product>()
-                .SingleOrDefault(s => s.Id == id);
+                .SingleOrDefaultAsync(s => s.Id == id);
+
+            if (product == null) {
+                return new ApiResult<Product>(
+                    StatusCode.NotFound, "product not found ");                                                  
+            }
+
+            var api = new ApiResult<Product>();
+            api.Data = product;
+
+            return api;
         }
     }
 }

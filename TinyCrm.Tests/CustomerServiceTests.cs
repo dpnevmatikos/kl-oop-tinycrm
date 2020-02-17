@@ -6,6 +6,8 @@ using Autofac;
 
 using TinyCrm.Core.Model.Options;
 using TinyCrm.Core.Services;
+using System.Threading.Tasks;
+using TinyCrm.Core;
 
 namespace TinyCrm.Tests
 {
@@ -20,7 +22,7 @@ namespace TinyCrm.Tests
         }
 
         [Fact]
-        public void CreateCustomer_Success()
+        public async Task CreateCustomer_Success()
         {
             var options = new CreateCustomerOptions()
             {
@@ -31,7 +33,7 @@ namespace TinyCrm.Tests
                 Phone = "344234",
             };
 
-            var result = csvc_.CreateCustomer(options);
+            var result = await csvc_.CreateCustomerAsync(options);
 
             Assert.NotNull(result);
 
@@ -45,6 +47,26 @@ namespace TinyCrm.Tests
             Assert.Equal(options.Email, customer.Email);
             Assert.Equal(options.Phone, customer.Phone);
             Assert.True(customer.IsActive);
+        }
+        [Fact]
+
+        public async Task CreateCustomer_Fail_VatNumber()
+        {
+
+            var options = new CreateCustomerOptions()
+            {
+                Email = "dsadas",
+                FirstName = "Alex",
+                LastName = "ath",
+                Phone = "344234",
+            };
+            var result = await csvc_.CreateCustomerAsync(options);
+
+            Assert.Equal(StatusCode.BadRequest, result.ErrorCode);
+
+
+
+
         }
     }
 }

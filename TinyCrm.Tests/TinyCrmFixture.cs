@@ -14,7 +14,7 @@ namespace TinyCrm.Tests
 
         public TinyCrmFixture()
         {
-            Container = ServiceRegistrator.GetContainer()
+            Container = ServiceRegistrator.CreateContainer()
                 .BeginLifetimeScope();
             DbContext = Container.Resolve<TinyCrmDbContext>();
         }

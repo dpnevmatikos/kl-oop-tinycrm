@@ -15,8 +15,7 @@ namespace TinyCrm.Tests
                 Description = "Lenovo",
                 Price = 600.00M
             };
-            var sucess = psvc_.UpdateProduct("1111955", options);
-            Assert.True(sucess);
+            var sucess = psvc_.UpdateProductAsync("1111955", options);
         }
     }
 }

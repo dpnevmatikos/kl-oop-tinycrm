@@ -11,21 +11,20 @@ namespace TinyCrm.Web.Controllers
 {
     public class ProductController : Controller
     {
-        private IContainer Container { get; set; }
-        private TinyCrmDbContext Context { get; set; }
-        public ProductController()
+        private TinyCrmDbContext context_;
+
+        public ProductController(TinyCrmDbContext context)
         {
-             Container = Core.ServiceRegistrator.GetContainer();
-             Context = Container.Resolve<TinyCrmDbContext>();
+            context_ = context;
         }
 
         public IActionResult Index()
         {
-            var productList = Context
+            var productList = context_
                 .Set<Product>()
                 .Take(100)
                 .ToList();
-            var customerList = Context
+            var customerList = context_
                 .Set<Customer>()
                 .Take(100)
                 .ToList();

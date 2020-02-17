@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TinyCrm.Core.Model;
 using TinyCrm.Core.Model.Options;
 
@@ -17,29 +19,35 @@ namespace TinyCrm.Core.Services
                 throw new ArgumentException(nameof(context));
         }
 
-        public Customer CreateCustomer(CreateCustomerOptions options)
+        public async Task<ApiResult<Customer>> CreateCustomerAsync(
+            CreateCustomerOptions options)
         {
             if (options == null) {
-                return null;
+                return new ApiResult<Customer>(
+                    StatusCode.BadRequest, "Null options");
             }
 
             if (string.IsNullOrWhiteSpace(options.VatNumber) ||
               string.IsNullOrWhiteSpace(options.Email)) {
-                return null;
+                return new ApiResult<Customer>(
+                    StatusCode.BadRequest, "Mail or Vat is empty");
             }
 
             if (options.VatNumber.Length > 9) {
-                return null;
+                return new ApiResult<Customer>(
+                    StatusCode.BadRequest, "Invalid vat");
             }
 
-            var exists = SearchCustomers(
+            var exists = await SearchCustomers(
                 new SearchCustomerOptions()
                 {
                     VatNumber = options.VatNumber
-                }).Any();
+                }).AnyAsync();
 
             if (exists) {
-                return null;
+                return new ApiResult<Customer>(
+                    StatusCode.Conflict,
+                    $"Customer with {options.VatNumber} already exists");
             }
 
             var customer = new Customer()
@@ -53,14 +61,18 @@ namespace TinyCrm.Core.Services
                 
             };
 
-            context_.Add(customer);
+            await context_.AddAsync(customer);
             try {
-                context_.SaveChanges();
+                await context_.SaveChangesAsync();
             }catch (Exception ex) {
-                return null;
+                return new ApiResult<Customer>(
+                    StatusCode.InternalServerError, "Could not save customer");
             }
 
-            return customer;
+            return new ApiResult<Customer>()
+            {
+                Data = customer
+            };
         }
 
         public IQueryable<Customer> SearchCustomers(

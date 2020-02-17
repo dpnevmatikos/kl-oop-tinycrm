@@ -4,6 +4,8 @@ using Xunit;
 using Autofac;
 
 using TinyCrm.Core.Services;
+using System.Threading.Tasks;
+using TinyCrm.Core;
 
 namespace TinyCrm.Tests
 {
@@ -17,21 +19,21 @@ namespace TinyCrm.Tests
         }
 
         [Fact]
-        public void GetProductById_Success()
+        public async Task GetProductById_Success()
         {
-            var product = psvc_.GetProductById("1111955");
+            var product =await psvc_.GetProductByIdAsync("1111955");
 
-            Assert.NotNull(product);
-            Assert.Equal(2500.00M, product.Price);
+            Assert.Equal(StatusCode.Ok, product.ErrorCode);
+            
         }
 
         [Fact]
-        public void GetProductById_Failure_Null_ProductId()
+        public async Task GetProductById_Failure_Null_ProductId()
         {
-            var product = psvc_.GetProductById("     ");
+            var product = await psvc_.GetProductByIdAsync("     ");
             Assert.Null(product);
 
-            product = psvc_.GetProductById(null);
+            product = await psvc_.GetProductByIdAsync(null);
             Assert.Null(product);
         }
     }

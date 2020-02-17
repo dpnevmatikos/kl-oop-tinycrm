@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.FileExtensions;
 using Microsoft.Extensions.Configuration.Json;
@@ -13,7 +13,7 @@ namespace TinyCrmConsole
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", false, true)
@@ -35,21 +35,6 @@ namespace TinyCrmConsole
                 .Where(c => c.Email.Equals(
                     "πνευματικoς"))
                 .FirstOrDefault();
-
-            var productService = new ProductService();
-
-            productService.AddProduct(
-                new AddProductOptions() {
-                    Id = "123",
-                    Price = 13.33M,
-                    ProductCategory = ProductCategory.Cameras,
-                    Name = "Camera 1"
-                });
-
-            productService.UpdateProduct("123",
-                new UpdateProductOptions() {
-                    Price = 22.22M
-                });
         }
     }
 }

@@ -9,6 +9,8 @@ using TinyCrm.Core.Services;
 using TinyCrm.Core.Model.Options;
 
 using Autofac;
+using System.Threading.Tasks;
+using System;
 
 namespace TinyCrm.Tests
 {
@@ -29,7 +31,14 @@ namespace TinyCrm.Tests
         }
 
         [Fact]
-        public void CreateOrder_Success()
+        public void TestSomething()
+        {
+            var result = new Core.ApiResult<string>();
+
+        }
+
+        [Fact]
+        public async Task CreateOrder_Success()
         {
             var p1 = new AddProductOptions()
             {
@@ -46,11 +55,11 @@ namespace TinyCrm.Tests
                 Price =1230.00M,
                 ProductCategory = ProductCategory.Cameras
             };
-            Assert.True(products_.AddProduct(p1));
-            Assert.True(products_.AddProduct(p2));
+            //Assert.True(products_.AddProductAsync(p1));
+            //Assert.True(products_.AddProductAsync(p2));
 
-            var result = customers_
-                .CreateCustomer(new CreateCustomerOptions()
+            var result = await customers_
+                .CreateCustomerAsync(new CreateCustomerOptions()
                 {
                     Email = "customer@gmail.com",
                     VatNumber = CodeGenerator.CreateRandom()
@@ -59,14 +68,14 @@ namespace TinyCrm.Tests
 
             var products = new List<string> { p1.Id, p2.Id };
             var order = orders_.CreateOrder(
-                result.Id, products);
+                result.Data.Id, products);
 
             Assert.NotNull(order);
 
             var dbOrder = context_.Set<Order>().Find(order.Id);
             Assert.NotNull(dbOrder);
 
-            Assert.True(result.Id == dbOrder.Customer.Id);
+            Assert.True(result.Data.Id == dbOrder.Customer.Id);
 
             foreach (var p in products) {
                 Assert.Contains(dbOrder.Products

@@ -1,5 +1,6 @@
 ﻿using TinyCrm.Core.Model.Options;
 using TinyCrm.Core.Model;
+using System.Threading.Tasks;
 
 namespace TinyCrm.Core.Services
 {
@@ -13,7 +14,7 @@ namespace TinyCrm.Core.Services
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
-        bool AddProduct(AddProductOptions options);
+        Task<bool> AddProductAsync(AddProductOptions options);
 
         /// <summary>
         /// 
@@ -21,7 +22,7 @@ namespace TinyCrm.Core.Services
         /// <param name="productId"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        bool UpdateProduct(string productId,
+        Task<bool> UpdateProductAsync(string productId,
             UpdateProductOptions options);
 
         /// <summary>
@@ -29,6 +30,6 @@ namespace TinyCrm.Core.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Product GetProductById(string id);
+       Task<ApiResult<Product>> GetProductByIdAsync(string id);
     }
 }

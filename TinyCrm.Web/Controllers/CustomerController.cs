@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TinyCrm.Core.Data;
 using TinyCrm.Core.Model;
 
@@ -11,39 +12,37 @@ namespace TinyCrm.Web.Controllers
 {
     public class CustomerController : Controller
     {
-        private IContainer Container { get; set; }
-        private TinyCrmDbContext Context { get; set; }
+        private TinyCrmDbContext context_;
         private Core.Services.ICustomerService customers_;
 
-        public CustomerController()
+        public CustomerController(
+            TinyCrmDbContext context,
+            Core.Services.ICustomerService customers)
         {
-            Container = TinyCrm.Core.ServiceRegistrator.GetContainer();
-            Context = Container.Resolve<TinyCrmDbContext>();
-            customers_ = Container.Resolve<Core.Services.ICustomerService>();
+            context_ = context;
+            customers_ = customers;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var customerList = Context
+            var t = await context_
                 .Set<Customer>()
                 .Take(100)
-                .ToList();
+                .ToListAsync();
 
-            return View(customerList);
+            return View(t);
         }
 
         public IActionResult List()
         {
-            var customerList = Context
+            var customerList = context_
                 .Set<Customer>()
                 .Select(c => new { c.Email, c.VatNumber })
                 .Take(100)
-                .ToList();
+                .ToListAsync();
 
             return Json(customerList);
         }
-
-
 
         [HttpGet]
         public IActionResult Create()
@@ -52,10 +51,10 @@ namespace TinyCrm.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(
+        public async Task<IActionResult> Create(
             Models.CreateCustomerViewModel model)
         {
-            var result = customers_.CreateCustomer(
+            var result = await customers_.CreateCustomerAsync(
                 model?.CreateOptions);
 
             if (result == null) {
