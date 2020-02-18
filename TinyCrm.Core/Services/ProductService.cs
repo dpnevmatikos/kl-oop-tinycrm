@@ -135,11 +135,12 @@ namespace TinyCrm.Core.Services
 
             if (product == null) {
                 return new ApiResult<Product>(
-                    StatusCode.NotFound, "product not found ");                                                  
+                    StatusCode.NotFound, "product not found ");
             }
 
             var api = new ApiResult<Product>();
             api.Data = product;
+            api.ErrorCode = StatusCode.Ok;
 
             return api;
         }

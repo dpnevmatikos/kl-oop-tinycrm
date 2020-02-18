@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TinyCrm.Core.Data;
 using TinyCrm.Core.Model;
+using TinyCrm.Web.Extensions;
 
 namespace TinyCrm.Web.Controllers
 {
@@ -64,6 +65,16 @@ namespace TinyCrm.Web.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCustomer(
+           [FromBody] Core.Model.Options.CreateCustomerOptions options)
+        {
+            var result = await customers_.CreateCustomerAsync(
+                options);
+
+            return result.AsStatusResult();
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using TinyCrm.Core.Model;
 using TinyCrm.Core.Model.Options;
 
@@ -10,19 +10,22 @@ namespace TinyCrm.Core.Services
 {
     public class OrderService : IOrderService
     {
+        private readonly IProductService products_;
         private readonly ICustomerService customers_;
         private readonly Data.TinyCrmDbContext context_;
 
         public OrderService(
             ICustomerService customers,
+            IProductService products,
             Data.TinyCrmDbContext context)
         {
             context_ = context;
             customers_ = customers;
+            products_ = products;
         }
 
-        public Order CreateOrder(int customerId,
-            ICollection<string> productIds)
+        public async Task<ApiResult<Order>> CreateOrder(
+            int customerId, ICollection<string> productIds)
         {
             if (customerId <= 0) {
                 return null;
@@ -45,13 +48,20 @@ namespace TinyCrm.Core.Services
                 return null;
             }
 
-            var products = context_
-                .Set<Product>()
-                .Where(p => productIds.Contains(p.Id))
-                .ToList();
+            var products = new List<Product>();
 
-            if (products.Count != productIds.Count) {
-                return null;
+            foreach (var p in productIds) {
+                var presult = await products_
+                    .GetProductByIdAsync(p);
+
+                if (!presult.Success) {
+                    var ret = presult.ToResult<Order>();
+
+                    return new ApiResult<Order>(
+                        presult.ErrorCode, presult.ErrorText);
+                }
+
+                products.Add(presult.Data);
             }
 
             var order = new Order()
@@ -75,7 +85,10 @@ namespace TinyCrm.Core.Services
                 return null;
             }
 
-            return order;
+            return new ApiResult<Order>()
+            {
+                Data = order
+            };
         }
     }
 }

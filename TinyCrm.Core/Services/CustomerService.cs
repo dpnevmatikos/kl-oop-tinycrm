@@ -71,6 +71,7 @@ namespace TinyCrm.Core.Services
 
             return new ApiResult<Customer>()
             {
+                ErrorCode = StatusCode.Ok,
                 Data = customer
             };
         }
