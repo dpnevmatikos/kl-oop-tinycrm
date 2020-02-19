@@ -27,5 +27,14 @@
             ErrorCode = errorCode;
             ErrorText = errorText;
         }
+
+        public static ApiResult<T> CreateSuccess(T data)
+        {
+            return new ApiResult<T>()
+            {
+                Data = data,
+                ErrorCode = StatusCode.Ok
+            };
+        }
     }
 }

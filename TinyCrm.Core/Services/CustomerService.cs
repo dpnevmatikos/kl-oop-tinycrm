@@ -69,11 +69,7 @@ namespace TinyCrm.Core.Services
                     StatusCode.InternalServerError, "Could not save customer");
             }
 
-            return new ApiResult<Customer>()
-            {
-                ErrorCode = StatusCode.Ok,
-                Data = customer
-            };
+            return ApiResult<Customer>.CreateSuccess(customer);
         }
 
         public IQueryable<Customer> SearchCustomers(
