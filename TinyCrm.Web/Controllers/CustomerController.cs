@@ -24,20 +24,24 @@ namespace TinyCrm.Web.Controllers
             customers_ = customers;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var t = await context_
-                .Set<Customer>()
-                .Take(100)
-                .ToListAsync();
-
-            return View(t);
+            return View();
         }
 
-        public IActionResult List()
+        public async Task<IActionResult> SearchCustomers(
+            string email, string vatNumber)
         {
-            var customerList = context_
-                .Set<Customer>()
+            if (string.IsNullOrWhiteSpace(email)) {
+                return BadRequest("Mail is required");
+            }
+
+            var customerList = await customers_.
+                SearchCustomers(
+                new Core.Model.Options.SearchCustomerOptions() {
+                    VatNumber = vatNumber,
+                    Email = email
+                })
                 .Select(c => new { c.Email, c.VatNumber })
                 .Take(100)
                 .ToListAsync();

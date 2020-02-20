@@ -1,12 +1,24 @@
 ﻿@model List<TinyCrm.Core.Model.Customer>
-<ul class="list-group">
-   
-@{ 
-    foreach(var customer in Model) {
-        <li class="list-group-item">
-            @customer.VatNumber
-        </li>
-    }
 
-}
-</ul>
+<form class="js-search-customer">
+    <div class="form-group">
+    <label>Email address</label>
+    <input type="text" class="form-control js-email" name="email">
+  </div>
+  <div class="form-group">
+    <label>Vat number</label>
+    <input type="text" class="form-control js-vatnumber" name="vatnumber">
+  </div>
+  <button type="button" class="btn btn-primary js-btn-search">Submit</button>
+</form>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Vat number</th>
+      <th scope="col">E-mail</th>
+    </tr>
+  </thead>
+  <tbody class="js-customer-list">
+  </tbody>
+</table>

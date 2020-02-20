@@ -4,7 +4,7 @@
 
   <div class="form-group">
     <label for="@Html.IdFor(c => c.CreateOptions.VatNumber)">Vat Number</label>
-    @Html.TextBoxFor(c => c.CreateOptions.VatNumber, new { @class = "form-control" })
+    @Html.TextBoxFor(c => c.CreateOptions.VatNumber, new { @class = "form-control", placeholder="enter your vat number" })
     <small id="emailHelp" class="form-text text-muted">
         Vat number should be 9 digits
     </small>
@@ -14,7 +14,8 @@
     <label for="@Html.IdFor(c => c.CreateOptions.Email)">Email</label>
       @Html.TextBoxFor(c => c.CreateOptions.Email, new { @class = "form-control" })
   </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
+
+  <button type="submit" class="btn btn-primary js-submit-customer">Submit</button>
     
     @if (!string.IsNullOrWhiteSpace(Model?.ErrorText)) {
         <div class="alert alert-danger" role="alert">
