@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 using TinyCrm.Core.Data;
-using TinyCrm.Core.Model;
 using TinyCrm.Web.Extensions;
 
 namespace TinyCrm.Web.Controllers
 {
     public class CustomerController : Controller
     {
-        private TinyCrmDbContext context_;
         private Core.Services.ICustomerService customers_;
 
         public CustomerController(
-            TinyCrmDbContext context,
             Core.Services.ICustomerService customers)
         {
-            context_ = context;
             customers_ = customers;
         }
 
@@ -53,22 +48,6 @@ namespace TinyCrm.Web.Controllers
         public IActionResult Create()
         {
             return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create(
-            Models.CreateCustomerViewModel model)
-        {
-            var result = await customers_.CreateCustomerAsync(
-                model?.CreateOptions);
-
-            if (result == null) {
-                model.ErrorText = "Oops. Something went wrong";
-
-                return View(model);
-            }
-
-            return Ok();
         }
 
         [HttpPost]

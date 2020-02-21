@@ -8,7 +8,7 @@ $('.js-btn-search').on('click', () => {
     let vatnumber = $('.js-vatnumber').val();
 
     $.ajax({
-        url: 'https://localhost:5001/customer/SearchCustomers',
+        url: '/customer/SearchCustomers',
         type: 'GET',
         data: {
             email: email,
@@ -32,3 +32,41 @@ $('.js-btn-search').on('click', () => {
     });
 });
 
+
+$('.js-submit-customer').on('click', () => {
+
+    $('.js-submit-customer').attr('disabled', true);
+
+    let email = $('.js-email').val();
+    let vatnumber = $('.js-vatnumber').val();
+
+    let data = JSON.stringify({
+        email: email,
+        vatNumber: vatnumber
+    });
+
+    $.ajax({
+        url: '/customer/CreateCustomer',
+        type: 'POST',
+        contentType: 'application/json',
+        data: data
+    }).done((customer) => {
+        $('.alert').hide();
+
+        let $alertArea = $('.js-create-customer-success');
+        $alertArea.html(`Successfully added customer with id ${customer.id}`);
+        $alertArea.show();
+
+        $('form.js-create-customer').hide();
+    }).fail((xhr) => {
+        $('.alert').hide();
+
+        let $alertArea = $('.js-create-customer-alert');
+        $alertArea.html(xhr.responseText);
+        $alertArea.fadeIn();
+
+        setTimeout(function () {
+            $('.js-submit-customer').attr('disabled', false);
+        }, 300);
+    });
+});

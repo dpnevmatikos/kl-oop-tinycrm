@@ -1,25 +1,29 @@
-﻿@model TinyCrm.Web.Models.CreateCustomerViewModel
+﻿@model TinyCrm.Core.Model.Options.CreateCustomerOptions
 
-<form method="post" action="@Url.Action("create", "customer")">
+<form class="js-create-customer" method="post"
+      action="@Url.Action("create", "customer")">
 
   <div class="form-group">
-    <label for="@Html.IdFor(c => c.CreateOptions.VatNumber)">Vat Number</label>
-    @Html.TextBoxFor(c => c.CreateOptions.VatNumber, new { @class = "form-control", placeholder="enter your vat number" })
+    <label for="@Html.IdFor(c => c.VatNumber)">Vat Number</label>
+    @Html.TextBoxFor(c => c.VatNumber,
+        new { @class = "form-control js-vatnumber", placeholder="enter your vat number" })
     <small id="emailHelp" class="form-text text-muted">
         Vat number should be 9 digits
     </small>
   </div>
 
   <div class="form-group">
-    <label for="@Html.IdFor(c => c.CreateOptions.Email)">Email</label>
-      @Html.TextBoxFor(c => c.CreateOptions.Email, new { @class = "form-control" })
+    <label for="@Html.IdFor(c => c.Email)">Email</label>
+      @Html.TextBoxFor(c => c.Email,
+        new { @class = "form-control js-email" })
   </div>
 
-  <button type="submit" class="btn btn-primary js-submit-customer">Submit</button>
-    
-    @if (!string.IsNullOrWhiteSpace(Model?.ErrorText)) {
-        <div class="alert alert-danger" role="alert">
-            @Model?.ErrorText
-        </div>
-    }
+  <button type="button" class="btn btn-primary js-submit-customer">Submit</button>
 </form>
+<div class="alert alert-danger js-create-customer-alert" role="alert"
+     style="display: none">
+</div>
+
+<div class="alert alert-success js-create-customer-success" role="alert"
+     style="display: none">
+</div>
