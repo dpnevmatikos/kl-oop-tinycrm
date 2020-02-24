@@ -32,6 +32,28 @@ $('.js-btn-search').on('click', () => {
     });
 });
 
+let contacts = [];
+
+$('.js-add-contact').on('click', function () {
+    let $firstname = $('.js-contact-firstname');
+    let $email = $('.js-contact-email');
+
+    let firstname = $firstname.val();
+    let email = $email.val();
+
+    if (email.length === 0 || firstname.length === 0) {
+        return;
+    }
+
+    contacts.push({
+        firstname: firstname,
+        email: email
+    });
+
+    $firstname.val('');
+    $email.val('');
+    console.log(contacts);
+});
 
 $('.js-submit-customer').on('click', () => {
 
@@ -42,7 +64,8 @@ $('.js-submit-customer').on('click', () => {
 
     let data = JSON.stringify({
         email: email,
-        vatNumber: vatnumber
+        vatNumber: vatnumber,
+        contacts: contacts
     });
 
     $.ajax({

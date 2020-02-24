@@ -1,4 +1,6 @@
-﻿namespace TinyCrm.Core.Model.Options
+﻿using System.Collections.Generic;
+
+namespace TinyCrm.Core.Model.Options
 {
     public class CreateCustomerOptions
     {
@@ -7,5 +9,6 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Phone { get; set; }
+        public List<Model.ContactPerson> Contacts { get; set; }
     }
 }
